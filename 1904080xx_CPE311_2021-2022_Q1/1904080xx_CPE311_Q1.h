@@ -1,3 +1,6 @@
+#ifndef HEADER_H
+#define HEADER_H
+
 struct Product
 {
     char ProductName[40];
@@ -29,3 +32,5 @@ struct Person
 void FillShoppingInfo(Person *);
 
 void WriteReceipt(Person);
+
+#endif
