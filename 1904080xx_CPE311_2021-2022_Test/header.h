@@ -1,5 +1,5 @@
-#ifndef HEADER_H
-#define HEADER_H
+#ifndef _HEADER_H_
+#define _HEADER_H_
 
 struct Product
 {
