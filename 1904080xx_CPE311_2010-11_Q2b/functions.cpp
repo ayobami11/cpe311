@@ -15,7 +15,7 @@ int GetRandomNum(int m)
 int GetRandomNum(int i, int j)
 {
     // generates a random int between (i + 1) and (j - 1)
-    int random_number = (i + 1) + (rand() % (j - 1));
+    int random_number = (i + 1) + (rand() % (j - i - 1));
     return random_number;
 }
 
