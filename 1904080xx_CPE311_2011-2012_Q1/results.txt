@@ -1,0 +1,14 @@
+Jane Doe
+
+Course Code   Unit       Grade      
+ACC301         3          B          
+ZLY406         2          C          
+HKE215         1          B          
+JIL2024        5          A          
+CSC501         3          C          
+ENG16921       2          A          
+
+UA = 16
+UP = 6
+WS = 66
+GPA = 4.125
