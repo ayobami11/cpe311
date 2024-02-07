@@ -11,6 +11,7 @@ struct Date
 struct Person
 {
     char name[40];
+    // birthday variable is of custom data type Date
     Date birthday;
 };
 

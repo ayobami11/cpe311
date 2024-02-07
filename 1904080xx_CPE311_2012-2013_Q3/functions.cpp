@@ -1,5 +1,7 @@
 #include <iostream>
-#include <string.h>
+// for strcpy
+#include <string>
+// for time-related functionality; time(), localtime(), time_t, tm
 #include <ctime>
 
 #include "header.h"
@@ -17,7 +19,7 @@ Person FillPerson()
 
     cout << "\nName: ";
     cin.getline(temp, 40);
-    strcpy_s(new_person.name, temp);
+    strcpy(new_person.name, temp);
 
     cout << "\nBirthday information (format: dd-mm-yyyy) : ";
     cout << "\n\tDay: ";
@@ -40,7 +42,7 @@ Person FillPerson()
 
 void WritePerson(Person person)
 {
-
+    // a 12-element array representing the monts of the year; 15 represents the max size of the char array used for each element
     char months[12][15] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
     cout << "\nPerson information:";
@@ -63,23 +65,50 @@ void WhoIsOlder(Person person1, Person person2)
     WritePerson(person1);
     WritePerson(person2);
 
-    struct tm new_time;
+    // examples on using dates in cpp: :https://codescracker.com/cpp/program/cpp-program-print-date.htm
+
+    // creates a variable of type 'time_t' which is defined in the ctime header file
     time_t now = time(0);
+    // localtime: https://www.programiz.com/cpp-programming/library-function/ctime/localtime
+    tm *ltm = localtime(&now);
 
-    localtime_s(&new_time, &now);
+    localtime(&now);
 
-    // new_time.tm_hour returns years elapsed since 1990
-    int current_year = 1900 + new_time.tm_year;
+    // ltm->tm_year returns the number of years elapsed since 1900
+    int current_year = 1900 + ltm->tm_year;
 
     cout << "\n"
          << person1.name << " is " << (current_year - person1.birthday.year) << " years old.";
     cout << "\n"
          << person2.name << " is " << (current_year - person2.birthday.year) << " years old.";
 
-    bool is_person1_older;
-
-    is_person1_older = (person1.birthday.year < person2.birthday.year) || (person1.birthday.month < person2.birthday.month) || (person1.birthday.day < person1.birthday.day);
+    // returns true if person1 is older by year, month or day; else false
+    /* the expressions in parenthesis would evaluate to a boolean
+        if (val) == 0 - evaluates to false
+        if (val) != 0 - evaluates to true (integers not equal to 0 evaluate to true)
+    */
+    bool is_person1_older = (person1.birthday.year < person2.birthday.year) || (person1.birthday.month < person2.birthday.month) || (person1.birthday.day < person1.birthday.day);
 
     cout << "\n"
-         << (is_person1_older ? person1.name : person2.name) << " is older than " << (!is_person1_older ? person1.name : person2.name) << " by about " << abs(person1.birthday.year - person2.birthday.year) << " years." << endl;
+         << (is_person1_older ? person1.name : person2.name)
+         << " is older than "
+         << (!is_person1_older ? person1.name : person2.name)
+         << " by about ";
+
+    /* the expression in the if-conditional would evaluate to a boolean
+        if abs(val) > 0 - evaluates to true
+        if abs(val) == 0 - evaluates to false
+    */
+    if (abs(person1.birthday.year - person2.birthday.year))
+    {
+        cout << abs(person1.birthday.year - person2.birthday.year) << " years.";
+    }
+    else if (abs(person1.birthday.month - person2.birthday.month))
+    {
+        cout << abs(person1.birthday.month - person2.birthday.month) << " months.";
+    }
+    else
+    {
+        cout << abs(person1.birthday.day - person2.birthday.day) << " days.";
+    }
 }
