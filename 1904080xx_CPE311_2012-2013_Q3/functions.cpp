@@ -72,9 +72,8 @@ void WhoIsOlder(Person person1, Person person2)
     // localtime: https://www.programiz.com/cpp-programming/library-function/ctime/localtime
     tm *ltm = localtime(&now);
 
-    localtime(&now);
-
     // ltm->tm_year returns the number of years elapsed since 1900
+    // ltm->tm_year is equivalent to (*ltm).tm_year
     int current_year = 1900 + ltm->tm_year;
 
     cout << "\n"

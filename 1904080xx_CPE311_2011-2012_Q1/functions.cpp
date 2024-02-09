@@ -15,7 +15,7 @@ using namespace std;
 void GetStudentInfo(Student &student)
 {
 
-    // temporary variable for stroring user input before storage
+    // temporary variable for storing user input before storage
     char temp[40];
 
     cout << "\nPlease provide the following information: \n";
