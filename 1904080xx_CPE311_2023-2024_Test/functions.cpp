@@ -1,140 +1,105 @@
 #include <iostream>
-// for srand and rand
-#include <stdlib.h>
+// for string data type; strcpy function
+#include <string>
 // for left manipulator; setw function
 #include <iomanip>
-// for strcpy
-#include <string.h>
 
 #include "header.h"
 
 using namespace std;
 
-void AssignRandomHouse(Player &player, HousesAssigned &assigned_houses, int number_of_players)
-{
+/*
+	player_name is a char array so what we are accessing in the function is actually a pointer to player_name (i.e. address of player_name) - just as for a normal array
+	no need to dereference though using * or -> since it is already handled internally (for arrays)
+*/
+void ConfigureGame(Player players[4], int number_of_players, char player_name[40], char &type_of_color) {
 
-    // generates a seed value for producing random numbers
-    srand((unsigned)time(NULL));
+	char possible_houses[4] = {'R', 'Y', 'G', 'B'}; // for Red, Yellow, Green, Blue
+	// keeps track of the current position in the possible_houses array
+	// in this solution, houses are assigned starting from the left of the array so house Red is assigned first, then Yellow, ...
+	int house_index = 0;
 
-    /*
-        number_of_players because:
-            for a 2-player game: number of houses for a single player should be 2 i.e. i = 0 then i = 1 (2 iterations of the loop)
-            for a 4-player game: number of houses for a single player should be 1 i.e. i = 0 (1 iteration of the loop)
-    */
-    int i = 0;
+	for (int i = 0; i < number_of_players; i++) {
+		// (i + 1) because index starts from 0
+		cout << "\nPlayer " << (i + 1);
+		cout << "\nName: ";
 
-    // do-while loops are guaranteed to run at least one
-    // in this case, the loop only runs a second time if it is a 2-player game meaning a player should have 2 houses
-    do
-    {
+		cin.getline(player_name, 40);
 
-        // Assigns a house randomly to a player; this loop runs until an unassigned house is found
-        while (!player.houses[i].status)
-        {
+		strcpy(players[i].name, player_name);
 
-            // generates a random int between 0 and 3
-            int random_number = rand() % 4;
+		/*
+			(number_of_players == 2 ? 2 : 1) - shorthand for if-else statement
+				if the number_of_players is 2, this inner loop runs twice because a single player can be assigned two houses i.e. j = 0, then j = 1
+				if not (i.e. number_of_players is 4 or anything other than 2), this loop runs just once i.e. j = 0
+		*/
+		for (int j = 0; j < (number_of_players == 2 ? 2 : 1); j++) {
 
-            /*
-                Mapping of integers to houses:
-                    0 - Red
-                    1 - Yellow
-                    2 - Green
-                    3 - Blue
-            */
-            switch (random_number)
-            {
-            case 0:
-                if (!assigned_houses.Red)
-                {
-                    player.houses[i].colour = Red;
-                    player.houses[i].status = true;
-                    assigned_houses.Red = true;
-                }
+			type_of_color = possible_houses[house_index++];
+			/*
+				equivalent to:
+				type_of_color = possible_houses[house_index];
+				house_index++;
+			*/
 
-                break;
-            case 1:
-                if (!assigned_houses.Yellow)
-                {
-                    player.houses[i].colour = Yellow;
-                    player.houses[i].status = true;
-                    assigned_houses.Yellow = true;
-                }
+			switch (type_of_color) {
+				case 'R':
+					players[i].houses[j].color = Red;
+					players[i].houses[j].status = true;
+					break;
+				case 'Y':
+					players[i].houses[j].color = Yellow;
+					players[i].houses[j].status = true;
+					break;
+				case 'G':
+					players[i].houses[j].color = Green;
+					players[i].houses[j].status = true;
+					break;
+				case 'B':
+					players[i].houses[j].color = Blue;
+					players[i].houses[j].status = true;
+					break;
+				default:
+					cerr << "\nInvalid house color.";
+			}
+		}
 
-                break;
-            case 2:
-                if (!assigned_houses.Green)
-                {
-                    player.houses[i].colour = Green;
-                    player.houses[i].status = true;
-                    assigned_houses.Green = true;
-                }
+	}
+};
 
-                break;
-            case 3:
-                if (!assigned_houses.Blue)
-                {
-                    player.houses[i].colour = Blue;
-                    player.houses[i].status = true;
-                    assigned_houses.Blue = true;
-                }
+void PrintResults(Player players[4], int number_of_players) {
 
-                break;
-            default:
-                cout << "\nInvalid house index.";
-            }
-        }
+	string houses[4] = {"Red", "Yellow", "Green", "Blue"};
+	
+	cout << left << setw(20) << "Name" << setw(20) << "House" << setw(20) << "Member" << '\n';
 
-        i++;
+	for (int i = 0; i < number_of_players; i++) {
+		for (int j = 0; j < (number_of_players == 2 ? 2 : 1); j++) {
+			/*
+				players[i].houses[j].color is an enum value of type Colour which is actually stored as an integer
+				this integer is then used to access the corresponding house from the houses array
+			*/
+			cout << left << setw(20) << players[i].name << setw(20) << houses[players[i].houses[j].color] << setw(20) << players[i].houses[j].member << '\n';
+		}
+	}	
+	
 
-    } while (number_of_players == 2 && i < 2);
+	cout << endl;
+};
+
+void DeductMembers(Player players[4], int number_of_players) {
+
+	int members_to_deduct = 0;
+
+	for (int i = 0; i < number_of_players; i++) {
+		for (int j = 0; j < (number_of_players == 2 ? 2 : 1); j++) {
+			// increments members_to_deduct first before decreasing the number of members associated with a house
+			/*
+				equivalent to:
+				members_to_deduct += 1;
+				players[i].houses[j].member -= members_to_deduct;
+			*/
+			players[i].houses[j].member -= ++members_to_deduct;
+		}
+	}
 }
-
-void ConfigureGame(Player players[4], int number_of_players)
-{
-
-    HousesAssigned assigned_houses;
-
-    char temp[40];
-
-    cout << "\nPlayers' information:\n";
-
-    for (int i = 0; i < number_of_players; i++)
-    {
-        cout << "\nPlayer " << (i + 1);
-        cout << "\n\tName: ";
-        cin.getline(temp, 40);
-        strcpy(players[i].name, temp);
-
-        // 4-player game: a player is assigned 1 house
-        // 2-player game: a player is assigned 2 houses
-        for (int j = 0; j < (number_of_players / 2); j++)
-        {
-            AssignRandomHouse(players[i], assigned_houses, number_of_players);
-        }
-    }
-};
-
-void DisplayResults(Player players[4], int number_of_players)
-{
-
-    char house_names[4][10] = {"Red", "Yellow", "Green", "Blue"};
-
-    cout << left << setw(20) << "Name" << setw(20) << "House" << setw(20) << "Member"
-         << "\n";
-
-    for (int i = 0; i < number_of_players; i++)
-    {
-
-        int j = 0;
-
-        do
-        {
-            cout << left << setw(20) << players[i].name << setw(20) << house_names[players[i].houses[j].colour] << setw(20) << players[i].houses[j].member << "\n";
-
-            j++;
-        } while (number_of_players == 2 && j < 2);
-    }
-
-    cout << endl;
-};

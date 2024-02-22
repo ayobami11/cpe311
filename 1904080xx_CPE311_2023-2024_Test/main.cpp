@@ -7,51 +7,37 @@ using namespace std;
 int main(void)
 {
 
-    // temporary variable for storing user input before storage
-    char temp[40];
-
-    // these variables are for the gamemaster I guess - I didn't use player_name and type_of_color
     char player_name[40];
     int number_of_players;
     char type_of_color;
 
+    Player players[4];
+
+    // temporary variable which accepts the input for the number of players before it is stored
+    char temp[10];
+
+    // loop runs until user provides a valid input
     do
     {
+        cout << "\nNumber of players (valid values are 2 or 4): ";
 
-        cout << "\nNumber of players (the only valid options are 2 or 4): ";
-        cin.getline(temp, 40);
-
+        cin.getline(temp, 10);
         number_of_players = atoi(temp);
-
-        cout << number_of_players;
 
     } while (number_of_players != 2 && number_of_players != 4);
 
-    // maximum of 4 players
-    Player players[4];
+    ConfigureGame(players, number_of_players, player_name, type_of_color);
 
-    ConfigureGame(players, number_of_players);
+    cout << "\nPlayers' information before deduction of members.\n";
+    PrintResults(players, number_of_players);
 
-    DisplayResults(players, number_of_players);
+    // helper function to deduct members as specified in the question
+    DeductMembers(players, number_of_players);
 
-    if (number_of_players == 2)
-    {
-        players[0].houses[0].member -= 1;
-        players[0].houses[1].member -= 2;
-        players[1].houses[0].member -= 3;
-        players[1].houses[1].member -= 4;
-    }
-    else if (number_of_players == 4)
-    {
-        players[0].houses[0].member -= 1;
-        players[1].houses[0].member -= 2;
-        players[2].houses[0].member -= 3;
-        players[3].houses[0].member -= 4;
-    }
-
-    DisplayResults(players, number_of_players);
+    cout << "\nPlayers' information after deduction of members.\n";
+    PrintResults(players, number_of_players);
 
     system("pause");
 
     return 0;
-}
+};

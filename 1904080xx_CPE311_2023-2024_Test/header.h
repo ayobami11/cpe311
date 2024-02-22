@@ -1,55 +1,48 @@
 #ifndef _HEADER_H_
 #define _HEADER_H_
 
-// the integers on the right have those values assigned to them implicitly; this is just to be clear
 enum Colour
 {
-    Red = 0,
-    Yellow = 1,
-    Green = 2,
-    Blue = 3
+    Red,
+    Yellow,
+    Green,
+    Blue
 };
 
 struct House
 {
-    Colour colour;
+
+    Colour color;
     int member;
     bool status;
 
-    // default struct constructor
+    // Default struct constructor - https://linuxhint.com/struct-constructor-cpp/
     House()
     {
-        colour = Red;
+        color = Red;
         member = 4;
         status = false;
     };
-};
 
-// keeps track of the houses that are assignable (not already taken by a player)
-struct HousesAssigned
-{
-    bool Red, Yellow, Green, Blue;
+    /*
+        Alternative syntax: initializer list syntax
 
-    HousesAssigned()
-    {
-        Red = false;
-        Yellow = false;
-        Green = false;
-        Blue = false;
-    };
+        House(): color(Red), member(4), status(false) {};
+    */
 };
 
 struct Player
 {
     char name[40];
-    // a player can have a maximum of two houses; 1 for a 4-player game, 2 for a 2-player game
+    // a player can be assigned a maximum of two houses
     House houses[2];
 };
 
-void AssignRandomHouse(Player &, HousesAssigned &, int number_of_players);
+// using a reference parameter for type_of_color (fourth parameter)
+void ConfigureGame(Player[4], int, char[40], char &);
 
-void ConfigureGame(Player[4], int number_of_players);
+void DeductMembers(Player[4], int);
 
-void DisplayResults(Player[4], int number_of_players);
+void PrintResults(Player[4], int);
 
 #endif
