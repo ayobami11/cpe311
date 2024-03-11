@@ -122,16 +122,11 @@ void DisplayResults(Player players[4], int number_of_players)
     cout << endl;
 };
 
-void DeductMembers(Player players[4], int number_of_players)
-{
+void DeductMembers(Player players[4], int number_of_players) {
 
-    int members_to_deduct = 0;
-
-    for (int i = 0; i < number_of_players; i++)
-    {
-        for (int j = 0; j < (number_of_players == 2 ? 2 : 1); j++)
-        {
-            players[i].houses[j].member -= ++members_to_deduct;
-        }
-    }
+	for (int i = 0; i < number_of_players; i++) {
+		for (int j = 0; j < (number_of_players == 2 ? 2 : 1); j++) {
+			players[i].houses[j].member -= (i + 1);
+		}
+	}
 };
