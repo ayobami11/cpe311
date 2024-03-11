@@ -1,7 +1,10 @@
 #include <iostream>
+// for strcpy function, string data type
 #include <string>
-#include <iomanip>
+// for toupper function
 #include <cctype>
+// for left manipulator
+#include <iomanip>
 
 #include "header.h"
 
@@ -10,69 +13,91 @@ using namespace std;
 void ConfigureGame(Player players[4], int number_of_players, char player_name[40], char &type_of_color)
 {
 
-    Colour chosen_house = NoColor;
+    // keeps track of which houses have been assigned
+    // corresponds to houses Red, Yellow, Green and Blue respectively
     bool assigned_houses[4] = {false, false, false, false};
-    bool exists = false;
 
-    cout << "\nPlayers' information.\n";
+    // No_Colour is just a placeholder for invalid house inputs, and also serves as the default value
+    Colour selected_house = No_Colour;
+    // indicates if the selected house (house provided chosen by the gamemaster) is one of the possible 4
+    bool is_selected_house_valid = false;
+
+    char house_colours[4] = {'R', 'Y', 'G', 'B'};
+
+    cout << "\nPlayers' information";
 
     for (int i = 0; i < number_of_players; i++)
     {
 
-        cout << "\nPlayer" << (i + 1) << ":";
+        cout << "\nPlayer " << (i + 1);
         cout << "\nName: ";
-
         cin.getline(player_name, 40);
+
         strcpy(players[i].name, player_name);
 
         for (int j = 0; j < (number_of_players == 2 ? 2 : 1); j++)
         {
 
+            /*
+                This loop is guaranteed to run at least once.
+                The do-while loop is terminated when a player has been assigned a valid house.
+            */
             do
             {
-                // as the gamemaster
-                cout << "\nAssign a house to a player:\n\tR for Red\n\tY for Yellow\n\tG for Green\n\tB for Blue.";
-                cout << "\nValid options are R, Y, G and B: ";
 
+                cout << "\nPlease select a house:\nPossible values are R for Red, Y for Yellow, G for Green, B for Blue: ";
                 cin >> type_of_color;
-
+                // this is very important
                 cin.ignore(10, '\n');
 
+                // converts the input char to uppercase so we don't have to worry about if the user used uppercase or lowercase
                 type_of_color = toupper(type_of_color);
 
+                // in this switch block, we assume all inputs of R, Y, G, B are valid inputs whether they have been assigned already or not
                 switch (type_of_color)
                 {
                 case 'R':
-                    chosen_house = Red;
-                    exists = true;
+                    selected_house = Red;
+                    is_selected_house_valid = true;
                     break;
                 case 'Y':
-                    chosen_house = Yellow;
-                    exists = true;
+                    selected_house = Yellow;
+                    is_selected_house_valid = true;
                     break;
                 case 'G':
-                    chosen_house = Green;
-                    exists = true;
+                    selected_house = Green;
+                    is_selected_house_valid = true;
                     break;
                 case 'B':
-                    chosen_house = Blue;
-                    exists = true;
+                    selected_house = Blue;
+                    is_selected_house_valid = true;
                     break;
                 default:
-                    cerr << "\nInvalid house color.";
+                    selected_house = No_Colour;
+                    cerr << "\nInvalid house selection.";
                 }
 
-                // if a house has already been assigned
-                if (chosen_house != NoColor && assigned_houses[chosen_house])
+                /* enums (in this case, selected house) are stored implicitly as integers already, it is not necessary to convert them to an int first
+                 we use the index associated with an enum value to access and modify the assigned houses array
+
+                 we then check if the selected house has been assigned, if it has, our assumption was wrong and we invalidate the selected house
+                 by setting is_selected_house_valid to false
+                 */
+
+                // remember assigned_houses is just an array of booleans indicating if the corresponding house has been assigned
+                if (selected_house != No_Colour && assigned_houses[selected_house])
                 {
-                    exists = false;
-                    cout << "\nPlease select a different house, this house has already been assigned.\n";
+                    selected_house = No_Colour;
+                    is_selected_house_valid = false;
+                    cout << "\nThe house selected has been assigned to a different player. Please choose another house.";
                 }
 
-            } while (!exists);
+            } while (!is_selected_house_valid);
 
-            players[i].houses[j] = House(chosen_house, 4, true);
-            assigned_houses[chosen_house] = true;
+            // at this point, the selected house is a valid house that has not been assigned yet
+            players[i].houses[j] = House(selected_house, 4, true);
+            // enums (in this case, selected house) are stored implicitly as integers already, it is not necessary to convert them to an int first
+            assigned_houses[selected_house] = true;
         }
     }
 };
@@ -80,8 +105,7 @@ void ConfigureGame(Player players[4], int number_of_players, char player_name[40
 void DisplayResults(Player players[4], int number_of_players)
 {
 
-    string house_colors[4] = {"Red", "Yellow", "Green", "Blue"};
-    int members_to_deduct = 0;
+    string house_colours[4] = {"Red", "Yellow", "Green", "Blue"};
 
     cout << '\n'
          << left << setw(20) << "Name" << setw(20) << "House" << setw(20) << "Member";
@@ -91,7 +115,7 @@ void DisplayResults(Player players[4], int number_of_players)
         for (int j = 0; j < (number_of_players == 2 ? 2 : 1); j++)
         {
             cout << '\n'
-                 << left << setw(20) << players[i].name << setw(20) << house_colors[players[i].houses[j].color] << setw(20) << players[i].houses[j].member;
+                 << left << setw(20) << players[i].name << setw(20) << house_colours[players[i].houses[j].color] << setw(20) << players[i].houses[j].member;
         }
     }
 
@@ -110,4 +134,4 @@ void DeductMembers(Player players[4], int number_of_players)
             players[i].houses[j].member -= ++members_to_deduct;
         }
     }
-}
+};

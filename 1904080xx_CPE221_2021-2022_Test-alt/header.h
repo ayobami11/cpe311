@@ -7,11 +7,12 @@ enum Colour
     Yellow,
     Green,
     Blue,
-    NoColor
+    No_Colour
 };
 
 struct House
 {
+
     Colour color;
     int member;
     bool status;
